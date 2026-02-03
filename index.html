@@ -650,11 +650,16 @@
             `;
             document.getElementById('chatContainer').appendChild(welcomeDiv);
             document.getElementById('inputArea').style.display = 'none';
+            // 관리자 패널 다시 표시
+            document.querySelector('.admin-toggle').style.display = 'block';
         }
 
         function startChat() {
             document.getElementById('welcomeScreen').style.display = 'none';
             document.getElementById('inputArea').style.display = 'block';
+            // 관리자 패널 숨기기
+            document.querySelector('.admin-toggle').style.display = 'none';
+            document.getElementById('adminPanel').classList.remove('active');
             askQuestion();
         }
 
