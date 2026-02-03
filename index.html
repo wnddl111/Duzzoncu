@@ -26,7 +26,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #ffffff;
+            background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -41,63 +41,10 @@
             }
         }
 
-        .logo-container {
-            position: relative;
-            width: 280px;
-            height: 200px;
-        }
-
-        .logo-letter {
-            position: absolute;
-            font-size: 48px;
-            font-weight: 800;
-            animation: float 2s ease-in-out infinite;
-        }
-
-        .logo-letter:nth-child(1) { 
-            left: 20px; 
-            top: 40px;
-            color: #8B4513;
-            animation-delay: 0s;
-        }
-        .logo-letter:nth-child(2) { 
-            left: 70px; 
-            top: 30px;
-            color: #87CEEB;
-            animation-delay: 0.1s;
-        }
-        .logo-letter:nth-child(3) { 
-            left: 110px; 
-            top: 50px;
-            color: #000;
-            animation-delay: 0.2s;
-        }
-        .logo-letter:nth-child(4) { 
-            left: 150px; 
-            top: 35px;
-            color: #FFB6C1;
-            animation-delay: 0.3s;
-        }
-        .logo-letter:nth-child(5) { 
-            left: 190px; 
-            top: 45px;
-            color: #90EE90;
-            animation-delay: 0.4s;
-        }
-        .logo-letter:nth-child(6) { 
-            left: 230px; 
-            top: 30px;
-            color: #000;
-            animation-delay: 0.5s;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) rotate(-3deg);
-            }
-            50% {
-                transform: translateY(-15px) rotate(3deg);
-            }
+        .splash-screen video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
         .header {
@@ -467,12 +414,9 @@
 </head>
 <body>
     <div class="splash-screen" id="splashScreen">
-        <div class="logo-container">
-            <span class="logo-letter">두</span>
-            <span class="logo-letter">쫀</span>
-            <span class="logo-letter">쿠</span>
-            <span class="logo-letter">팅</span>
-        </div>
+        <video autoplay muted playsinline>
+            <source src="d.mp4" type="video/mp4">
+        </video>
     </div>
 
     <div class="header">
@@ -540,8 +484,8 @@
             <h3>관리자 패널</h3>
             <p id="dataCount">제출된 데이터: 0개</p>
             <button class="admin-button" onclick="viewSubmissions()">👥 신청서 보기</button>
-            <button class="admin-button" onclick="downloadAllCSV()">📊 전체 데이터 보기</button>
-            <button class="admin-button" onclick="downloadTodayCSV()">📅 오늘 데이터 보기</button>
+            <button class="admin-button" onclick="downloadCSVFile()">💾 CSV 파일 다운로드</button>
+            <button class="admin-button" onclick="downloadAllCSV()">📊 CSV 데이터 보기</button>
             <button class="admin-button danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
             <button class="admin-button" onclick="logout()">🚪 로그아웃</button>
         </div>
@@ -963,6 +907,30 @@
         function toggleAdmin() {
             const panel = document.getElementById('adminPanel');
             panel.classList.toggle('active');
+        }
+
+        function downloadCSVFile() {
+            if (submissions.length === 0) {
+                alert('다운로드할 데이터가 없습니다.');
+                return;
+            }
+
+            let csv = '\uFEFF'; // BOM for Excel UTF-8
+            csv += '일자,시간,이름,성별,나이,연락처,직업,MBTI,이상형,사진1,사진2,음료,알러지,촬영동의,개인정보동의,참석날짜\n';
+
+            submissions.forEach(sub => {
+                csv += '"' + (sub.date || '') + '","' + (sub.time || '') + '","' + (sub.name || '') + '","' + (sub.gender || '') + '","' + (sub.age || '') + '","' + (sub.phone || '') + '","' + (sub.job || '') + '","' + (sub.mbti || '') + '","' + (sub.ideal_type || '').replace(/"/g, '""') + '","' + (sub.photo1 ? 'O' : 'X') + '","' + (sub.photo2 ? 'O' : 'X') + '","' + (sub.beverage || '') + '","' + (sub.allergy || '') + '","' + (sub.video || '') + '","' + (sub.privacy || '') + '","' + (sub.event_date || '') + '"\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'duzzoncu_ting_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         function viewSubmissions() {
