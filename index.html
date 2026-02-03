@@ -361,10 +361,67 @@
             text-align: left;
             margin-bottom: 30px;
             max-width: 500px;
+            width: 100%;
             background: white;
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .welcome-screen {
+                padding: 15px;
+            }
+
+            .welcome-screen .notice-content {
+                font-size: 12px;
+                padding: 15px;
+                max-width: 100%;
+            }
+
+            .start-button {
+                padding: 12px 28px;
+                font-size: 14px;
+            }
+
+            .admin-toggle {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .admin-panel {
+                max-width: 85%;
+                bottom: 70px;
+                right: 10px;
+            }
+
+            textarea {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-screen .notice-content {
+                font-size: 11px;
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 14px;
+            }
+
+            .header p {
+                font-size: 10px;
+            }
+
+            .start-button {
+                padding: 10px 24px;
+                font-size: 13px;
+            }
         }
 
         .welcome-screen .notice-content strong {
@@ -410,9 +467,9 @@
     <div class="chat-container" id="chatContainer">
         <div class="welcome-screen" id="welcomeScreen" style="display: flex;">
             <div class="notice-content">
-<strong>[두쫀쿠팅 : 두쫀쿠 만들면서 하는 소개팅]</strong>
-딱딱하고 각 잡힌 소개팅 말고 두쫀쿠팅 어때요?<br><br>
-예쁜 카페에 함께 모여 두쫀쿠를 같이 만들다 보면,<br>
+딱딱하고 각 잡힌 소개팅 말고<br>
+두쫀쿠팅 어때요?<br>
+프랑스가 떠오르는 예쁜 카페에 함께 모여 두쫀쿠를 같이 만들다 보면,<br>
 어느새 마음이 열리고 서로 가까워질 거예요.
 <div class="notice-divider"></div>
 <strong>💌 두쫀쿠팅은 이렇게 진행돼요</strong>
@@ -468,7 +525,6 @@
             <button class="admin-button" onclick="viewSubmissions()">👥 신청서 보기</button>
             <button class="admin-button" onclick="downloadCSVFile()">💾 CSV 파일 다운로드</button>
             <button class="admin-button" onclick="downloadAllCSV()">📊 CSV 데이터 보기</button>
-            <button class="admin-button danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
             <button class="admin-button" onclick="logout()">🚪 로그아웃</button>
         </div>
     </div>
@@ -555,9 +611,9 @@
             welcomeDiv.id = 'welcomeScreen';
             welcomeDiv.innerHTML = `
                 <div class="notice-content">
-<strong>[두쫀쿠팅 : 두쫀쿠 만들면서 하는 소개팅]</strong>
-딱딱하고 각 잡힌 소개팅 말고 두쫀쿠팅 어때요?<br><br>
-예쁜 카페에 함께 모여 두쫀쿠를 같이 만들다 보면,<br>
+딱딱하고 각 잡힌 소개팅 말고<br>
+두쫀쿠팅 어때요?<br>
+프랑스가 떠오르는 예쁜 카페에 함께 모여 두쫀쿠를 같이 만들다 보면,<br>
 어느새 마음이 열리고 서로 가까워질 거예요.
 <div class="notice-divider"></div>
 <strong>💌 두쫀쿠팅은 이렇게 진행돼요</strong>
@@ -1115,24 +1171,6 @@
             content.appendChild(closeBtn);
             modal.appendChild(content);
             document.body.appendChild(modal);
-        }
-
-        async function clearAllData() {
-            if (!confirm('정말로 모든 데이터를 삭제하시겠습니까?')) {
-                return;
-            }
-
-            try {
-                const keys = Object.keys(localStorage).filter(key => key.startsWith('submission:'));
-                for (const key of keys) {
-                    localStorage.removeItem(key);
-                }
-                submissions = [];
-                updateDataCount();
-                alert('모든 데이터가 삭제되었습니다.');
-            } catch (error) {
-                alert('삭제 중 오류가 발생했습니다: ' + error.message);
-            }
         }
 
         document.getElementById('adminPassword').addEventListener('keypress', (e) => {
