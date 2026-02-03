@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duzzoncu Ting</title>
+    <title>두쫀쿠팅</title>
     <style>
         * {
             margin: 0;
@@ -13,43 +13,124 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #000;
+            background: #ffffff;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+        }
+
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .logo-container {
+            position: relative;
+            width: 280px;
+            height: 200px;
+        }
+
+        .logo-letter {
+            position: absolute;
+            font-size: 48px;
+            font-weight: 800;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .logo-letter:nth-child(1) { 
+            left: 20px; 
+            top: 40px;
+            color: #8B4513;
+            animation-delay: 0s;
+        }
+        .logo-letter:nth-child(2) { 
+            left: 70px; 
+            top: 30px;
+            color: #87CEEB;
+            animation-delay: 0.1s;
+        }
+        .logo-letter:nth-child(3) { 
+            left: 110px; 
+            top: 50px;
+            color: #000;
+            animation-delay: 0.2s;
+        }
+        .logo-letter:nth-child(4) { 
+            left: 150px; 
+            top: 35px;
+            color: #FFB6C1;
+            animation-delay: 0.3s;
+        }
+        .logo-letter:nth-child(5) { 
+            left: 190px; 
+            top: 45px;
+            color: #90EE90;
+            animation-delay: 0.4s;
+        }
+        .logo-letter:nth-child(6) { 
+            left: 230px; 
+            top: 30px;
+            color: #000;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(-3deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(3deg);
+            }
         }
 
         .header {
-            background: rgba(20, 20, 20, 0.95);
+            background: rgba(245, 245, 245, 0.95);
             backdrop-filter: blur(20px);
-            padding: 15px;
+            padding: 12px 15px;
             text-align: center;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
-            color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: #333;
         }
 
         .header h1 {
-            font-size: 17px;
+            font-size: 15px;
             font-weight: 600;
         }
 
         .header p {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.6);
             margin-top: 2px;
         }
 
         .chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: #000;
+            padding: 15px;
+            background: #ffffff;
             display: flex;
             flex-direction: column;
         }
 
         .message {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             animation: slideIn 0.3s ease;
         }
@@ -75,16 +156,17 @@
 
         .bubble {
             max-width: 75%;
-            padding: 12px 16px;
-            border-radius: 20px;
-            font-size: 16px;
-            line-height: 1.4;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.3;
             word-wrap: break-word;
+            white-space: pre-wrap;
         }
 
         .message.received .bubble {
-            background: #2c2c2e;
-            color: white;
+            background: #f0f0f0;
+            color: #333;
             border-bottom-left-radius: 4px;
         }
 
@@ -101,46 +183,46 @@
 
         .bubble img {
             max-width: 100%;
-            border-radius: 16px;
+            border-radius: 14px;
             display: block;
         }
 
         .input-area {
-            background: rgba(20, 20, 20, 0.95);
+            background: rgba(245, 245, 245, 0.95);
             backdrop-filter: blur(20px);
-            padding: 10px 15px;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .input-container {
             display: flex;
             align-items: center;
-            background: #1c1c1e;
-            border-radius: 20px;
-            padding: 8px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 6px 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .input-container input {
             flex: 1;
             background: transparent;
             border: none;
-            color: white;
-            font-size: 16px;
+            color: #333;
+            font-size: 14px;
             padding: 4px 8px;
             outline: none;
         }
 
         .input-container input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(0, 0, 0, 0.4);
         }
 
         .send-button {
             background: #0b84ff;
             border: none;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -159,25 +241,25 @@
         }
 
         .send-button svg {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             fill: white;
         }
 
         .options-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 8px;
         }
 
         .option-button {
-            background: #1c1c1e;
+            background: #ffffff;
             color: #0b84ff;
             border: 1px solid #0b84ff;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 15px;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -188,50 +270,62 @@
         }
 
         .image-upload-btn {
-            background: #1c1c1e;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 12px 24px;
-            color: white;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 18px;
+            padding: 10px 20px;
+            color: #333;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .image-upload-btn:hover {
-            background: #2c2c2e;
+            background: #f5f5f5;
         }
 
         .checkbox-container {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
-            margin-top: 10px;
-            color: white;
-            font-size: 15px;
+            margin-top: 8px;
+            color: #333;
+            font-size: 13px;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .checkbox-container input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-container label {
+            cursor: pointer;
+            line-height: 1.4;
         }
 
         .admin-panel {
             position: fixed;
             bottom: 80px;
             right: 20px;
-            background: rgba(28, 28, 30, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 16px;
             padding: 20px;
             display: none;
             max-width: 300px;
             z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .admin-panel.active {
@@ -275,24 +369,35 @@
         }
 
         .admin-panel h3 {
-            color: white;
+            color: #333;
             font-size: 16px;
             margin-bottom: 12px;
         }
 
         .admin-panel p {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(0, 0, 0, 0.6);
             font-size: 14px;
             margin-bottom: 12px;
+        }
+
+        .admin-panel input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 8px;
         }
 
         .start-button {
             background: #0b84ff;
             color: white;
             border: none;
-            padding: 16px 40px;
-            border-radius: 24px;
-            font-size: 18px;
+            padding: 14px 36px;
+            border-radius: 22px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             margin: 20px auto;
@@ -308,36 +413,107 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             height: 100%;
-            color: white;
-            text-align: center;
+            color: #333;
             padding: 20px;
+            overflow-y: auto;
         }
 
         .welcome-screen h2 {
-            font-size: 48px;
+            font-size: 18px;
             margin-bottom: 16px;
+            font-weight: 600;
         }
 
-        .welcome-screen p {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 40px;
+        .welcome-screen .notice-content {
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(0, 0, 0, 0.85);
+            text-align: left;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .welcome-screen .notice-content strong {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .welcome-screen .notice-content ul {
+            margin-left: 20px;
+            margin-top: 6px;
+        }
+
+        .welcome-screen .notice-content li {
+            margin-bottom: 4px;
+        }
+
+        .notice-divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.15);
+            margin: 12px 0;
+        }
+
+        .contact-link {
+            color: #0b84ff;
+            text-decoration: none;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
+    <div class="splash-screen" id="splashScreen">
+        <div class="logo-container">
+            <span class="logo-letter">두</span>
+            <span class="logo-letter">쫀</span>
+            <span class="logo-letter">쿠</span>
+            <span class="logo-letter">팅</span>
+        </div>
+    </div>
+
     <div class="header">
-        <h1>💬 Duzzoncu Ting</h1>
-        <p>채팅으로 정보 공유하기</p>
+        <h1>💚 두쫀쿠팅</h1>
+        <p>참여자 모집</p>
     </div>
 
     <div class="chat-container" id="chatContainer">
-        <div class="welcome-screen" id="welcomeScreen">
-            <h2>🎉</h2>
-            <p>duzzoncu_ting에 오신 것을 환영합니다!</p>
-            <button class="start-button" onclick="startChat()">대화 시작하기</button>
+        <div class="welcome-screen" id="welcomeScreen" style="display: none;">
+            <h2>💚 두쫀쿠팅 참여자 모집</h2>
+            <div class="notice-content">
+딱딱하고 각 잡힌 소개팅 말고<br>
+두쫀쿠팅 어때요?<br>
+프랑스가 떠오르는 예쁜 카페에 함께 모여 두쫀쿠를 같이 만들다 보면,<br>
+어느새 마음이 열리고 서로 가까워질 거예요.
+<div class="notice-divider"></div>
+<strong>💌 두쫀쿠팅은 이렇게 진행돼요</strong>
+<strong>1부 : 두쫀쿠 만들기</strong>
+사전 정보를 바탕으로 한 테이블 배치로 이상형과 함께 두쫀쿠를 만듭니다.
+
+<strong>2부 : 두쫀쿠 꾸미기 & 로테이션 타임</strong>
+가장 마음에 드는 이성에게 선물할 두쫀쿠를 꾸밉니다.<br>
+동시에 로테이션 타임을 가지며 여러 사람들과 대화합니다.
+<div class="notice-divider"></div>
+<strong>📍 장소</strong>
+서울시 서대문구 통일로<br>
+(자세한 주소는 참여 확정자에 한해 문자로 개별 안내)
+<div class="notice-divider"></div>
+<strong>🎂 참여 조건</strong>
+<ul>
+    <li>1992년생 ~ 2000년생</li>
+    <li>두쫀쿠를 좋아하는 분</li>
+</ul>
+<div class="notice-divider"></div>
+<strong>📲 신청 방법</strong>
+하기 버튼을 눌러 두쫀쿠팅 신청서를 작성해주세요!<br>
+<br>
+<strong>💬 추가 문의</strong>
+<a href="https://instagram.com/duzzonku_ting" class="contact-link" target="_blank">@duzzonku_ting</a>
+            </div>
+            <button class="start-button" onclick="startChat()">신청서 작성하기</button>
         </div>
     </div>
 
@@ -355,32 +531,58 @@
     <button class="admin-toggle" onclick="toggleAdmin()">📊</button>
     
     <div class="admin-panel" id="adminPanel">
-        <h3>관리자 패널</h3>
-        <p id="dataCount">제출된 데이터: 0개</p>
-        <button class="admin-button" onclick="downloadAllCSV()">📥 전체 데이터 다운로드</button>
-        <button class="admin-button" onclick="downloadTodayCSV()">📅 오늘 데이터 다운로드</button>
-        <button class="admin-button danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
+        <div id="adminLogin">
+            <h3>관리자 로그인</h3>
+            <input type="password" id="adminPassword" placeholder="비밀번호 입력">
+            <button class="admin-button" onclick="checkAdminPassword()">🔓 로그인</button>
+        </div>
+        <div id="adminContent" style="display: none;">
+            <h3>관리자 패널</h3>
+            <p id="dataCount">제출된 데이터: 0개</p>
+            <button class="admin-button" onclick="viewSubmissions()">👥 신청서 보기</button>
+            <button class="admin-button" onclick="downloadAllCSV()">📊 전체 데이터 보기</button>
+            <button class="admin-button" onclick="downloadTodayCSV()">📅 오늘 데이터 보기</button>
+            <button class="admin-button danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
+            <button class="admin-button" onclick="logout()">🚪 로그아웃</button>
+        </div>
     </div>
 
     <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;">
+    <input type="file" id="hiddenFileInput2" accept="image/*" style="display: none;">
 
     <script>
         let currentStep = 0;
         let userData = {};
         let submissions = [];
+        let isAdminLoggedIn = false;
+        const ADMIN_PASSWORD = "duzzoncu2025";
+
+        setTimeout(() => {
+            document.getElementById('welcomeScreen').style.display = 'flex';
+        }, 3500);
 
         const questions = [
-            { id: 'name', text: '안녕하세요! 먼저 이름을 알려주세요 😊', type: 'text' },
+            { id: 'greeting1', text: '안녕하세요! 두쫀쿠팅이에요 ㅎㅎ', type: 'greeting' },
+            { id: 'greeting2', text: '원활한 진행을 위해 몇 가지 개인 정보를 수집하고 있어요', type: 'greeting' },
+            { id: 'name', text: '먼저 이름을 알려주세요 😊', type: 'text' },
+            { id: 'gender', text: '성별을 선택해주세요', type: 'options', options: ['남성', '여성'] },
             { id: 'age', text: '나이가 어떻게 되시나요?', type: 'text' },
+            { id: 'phone', text: '연락처를 알려주세요\n(예: 010-1234-5678)', type: 'text' },
             { id: 'job', text: '직업이 무엇인가요?', type: 'text' },
             { id: 'mbti', text: 'MBTI가 무엇인가요?', type: 'options', options: ['ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', '모름'] },
             { id: 'ideal_type', text: '이상형을 간단히 설명해주세요! 💕', type: 'text' },
-            { id: 'photo', text: '사진을 올려주세요 📸', type: 'image' },
-            { id: 'privacy', text: '개인정보 수집 및 이용에 동의하시나요?\n\n수집된 정보는 행사 운영 목적으로만 사용되며, 행사 종료 후 파기됩니다.', type: 'checkbox' },
-            { id: 'date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (토)', '3/1 (토)', '3/8 (토)'] }
+            { id: 'photo1', text: '모두가 즐거운 소셜링을 만들기 위해 사진 두 장을 받고 있습니다.\n\n외모 및 신원 확인을 위한 과정이니 양해 부탁드려요!\n남녀 똑같이 확인하고 있답니다 ㅎㅎ\n\n첫 번째 사진을 올려주세요 📸', type: 'image' },
+            { id: 'photo2', text: '두 번째 사진도 올려주세요 📸', type: 'image' },
+            { id: 'beverage', text: '간단한 음료를 제공하고 있습니다.\n커피와 아이스티 중 어떤 걸 선호하시나요? ☕', type: 'options', options: ['커피', '아이스티'] },
+            { id: 'allergy', text: '견과류 알러지가 있으신가요?', type: 'options', options: ['있음', '없음'] },
+            { id: 'video', text: '[촬영 동의]\n\n후기 콘텐츠 제작을 위해 진행에 방해되지 않는 선에서 촬영이 있을 예정입니다.\n\n얼굴은 전체 모자이크 처리될 예정이며 이외의 목적에는 사용되지 않습니다.', type: 'checkbox' },
+            { id: 'privacy', text: '[개인정보 수집 및 이용 동의]\n\n서비스 제공(목적)을 위해 상기 정보를 수집하며, 수집된 정보는 행사 운영 목적으로만 사용되며 행사 종료 후 자동 파기됩니다.', type: 'checkbox' },
+            { id: 'event_date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (일) 오후 3-6시', '3/1 (일) 오후 3-6시', '3/8 (일) 오후 3-6시'] }
         ];
 
         async function loadData() {
+            if (!isAdminLoggedIn) return;
+            
             try {
                 const result = await window.storage.list('submission:');
                 if (result && result.keys) {
@@ -400,6 +602,73 @@
 
         function updateDataCount() {
             document.getElementById('dataCount').textContent = `제출된 데이터: ${submissions.length}개`;
+        }
+
+        function checkAdminPassword() {
+            const input = document.getElementById('adminPassword');
+            if (input.value === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadData();
+            } else {
+                alert('비밀번호가 올바르지 않습니다.');
+                input.value = '';
+            }
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+            submissions = [];
+            updateDataCount();
+        }
+
+        function resetToWelcome() {
+            currentStep = 0;
+            userData = {};
+            document.getElementById('chatContainer').innerHTML = '';
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.className = 'welcome-screen';
+            welcomeDiv.id = 'welcomeScreen';
+            welcomeDiv.innerHTML = `
+                <h2>💚 두쫀쿠팅 참여자 모집</h2>
+                <div class="notice-content">
+딱딱하고 각 잡힌 소개팅 말고<br>
+두쫀쿠팅 어때요?<br>
+프랑스가 떠오르는 예쁜 카페에 함께 모여 두쫀쿠를 같이 만들다 보면,<br>
+어느새 마음이 열리고 서로 가까워질 거예요.
+<div class="notice-divider"></div>
+<strong>💌 두쫀쿠팅은 이렇게 진행돼요</strong>
+<strong>1부 : 두쫀쿠 만들기</strong>
+사전 정보를 바탕으로 한 테이블 배치로 이상형과 함께 두쫀쿠를 만듭니다.
+
+<strong>2부 : 두쫀쿠 꾸미기 & 로테이션 타임</strong>
+가장 마음에 드는 이성에게 선물할 두쫀쿠를 꾸밉니다.<br>
+동시에 로테이션 타임을 가지며 여러 사람들과 대화합니다.
+<div class="notice-divider"></div>
+<strong>📍 장소</strong>
+서울시 서대문구 통일로<br>
+(자세한 주소는 참여 확정자에 한해 문자로 개별 안내)
+<div class="notice-divider"></div>
+<strong>🎂 참여 조건</strong>
+<ul>
+    <li>1992년생 ~ 2000년생</li>
+    <li>두쫀쿠를 좋아하는 분</li>
+</ul>
+<div class="notice-divider"></div>
+<strong>📲 신청 방법</strong>
+하기 버튼을 눌러 두쫀쿠팅 신청서를 작성해주세요!<br>
+<br>
+<strong>💬 추가 문의</strong>
+<a href="https://instagram.com/duzzonku_ting" class="contact-link" target="_blank">@duzzonku_ting</a>
+                </div>
+                <button class="start-button" onclick="startChat()">신청서 작성하기</button>
+            `;
+            document.getElementById('chatContainer').appendChild(welcomeDiv);
+            document.getElementById('inputArea').style.display = 'none';
         }
 
         function startChat() {
@@ -450,7 +719,7 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function addImageUpload() {
+        function addImageUpload(isSecondPhoto = false) {
             const chatContainer = document.getElementById('chatContainer');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message received';
@@ -458,14 +727,20 @@
             const uploadBtn = document.createElement('button');
             uploadBtn.className = 'image-upload-btn';
             uploadBtn.innerHTML = '📷 사진 선택하기';
-            uploadBtn.onclick = () => document.getElementById('hiddenFileInput').click();
+            uploadBtn.onclick = () => {
+                if (isSecondPhoto) {
+                    document.getElementById('hiddenFileInput2').click();
+                } else {
+                    document.getElementById('hiddenFileInput').click();
+                }
+            };
             
             messageDiv.appendChild(uploadBtn);
             chatContainer.appendChild(messageDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function addCheckbox() {
+        function addCheckbox(questionId) {
             const chatContainer = document.getElementById('chatContainer');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message received';
@@ -475,7 +750,7 @@
             
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.id = 'privacyCheckbox';
+            checkbox.id = `checkbox_${questionId}`;
             checkbox.onchange = () => {
                 if (checkbox.checked) {
                     handleAnswer('동의함', true);
@@ -483,7 +758,7 @@
             };
             
             const label = document.createElement('label');
-            label.htmlFor = 'privacyCheckbox';
+            label.htmlFor = `checkbox_${questionId}`;
             label.textContent = '동의합니다';
             
             checkboxContainer.appendChild(checkbox);
@@ -504,12 +779,16 @@
             setTimeout(() => {
                 addMessage(question.text, 'received');
                 
-                if (question.type === 'options') {
+                if (question.type === 'greeting') {
+                    currentStep++;
+                    askQuestion();
+                } else if (question.type === 'options') {
                     addOptions(question.options);
                 } else if (question.type === 'image') {
-                    addImageUpload();
+                    const isSecondPhoto = question.id === 'photo2';
+                    addImageUpload(isSecondPhoto);
                 } else if (question.type === 'checkbox') {
-                    addCheckbox();
+                    addCheckbox(question.id);
                 } else if (question.type === 'text') {
                     enableInput();
                 }
@@ -573,13 +852,88 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = async (event) => {
-                    const imageData = event.target.result;
-                    addMessage('', 'sent', true, imageData);
-                    userData[questions[currentStep].id] = imageData;
-                    currentStep++;
-                    setTimeout(() => {
-                        askQuestion();
-                    }, 300);
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // 최대 크기 설정
+                        const maxWidth = 800;
+                        const maxHeight = 800;
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height *= maxWidth / width;
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width *= maxHeight / height;
+                                height = maxHeight;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const resizedImage = canvas.toDataURL('image/jpeg', 0.7);
+                        addMessage('', 'sent', true, resizedImage);
+                        userData[questions[currentStep].id] = resizedImage;
+                        currentStep++;
+                        setTimeout(() => {
+                            askQuestion();
+                        }, 300);
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('hiddenFileInput2').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // 최대 크기 설정
+                        const maxWidth = 800;
+                        const maxHeight = 800;
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height *= maxWidth / width;
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width *= maxHeight / height;
+                                height = maxHeight;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const resizedImage = canvas.toDataURL('image/jpeg', 0.7);
+                        addMessage('', 'sent', true, resizedImage);
+                        userData[questions[currentStep].id] = resizedImage;
+                        currentStep++;
+                        setTimeout(() => {
+                            askQuestion();
+                        }, 300);
+                    };
+                    img.src = event.target.result;
                 };
                 reader.readAsDataURL(file);
             }
@@ -598,14 +952,13 @@
 
             try {
                 await window.storage.set(`submission:${submission.id}`, JSON.stringify(submission));
-                submissions.push(submission);
-                updateDataCount();
                 
                 setTimeout(() => {
-                    addMessage('새로운 참가자를 받기 위해 페이지를 새로고침해주세요!', 'received');
-                }, 1000);
+                    resetToWelcome();
+                }, 2000);
             } catch (error) {
-                addMessage('저장 중 오류가 발생했습니다. 다시 시도해주세요.', 'received');
+                console.error('저장 오류:', error);
+                addMessage('저장 중 오류가 발생했습니다: ' + error.message, 'received');
             }
         }
 
@@ -614,25 +967,158 @@
             panel.classList.toggle('active');
         }
 
+        function viewSubmissions() {
+            if (submissions.length === 0) {
+                alert('제출된 신청서가 없습니다.');
+                return;
+            }
+
+            let currentIndex = 0;
+
+            function showSubmission(index) {
+                const sub = submissions[index];
+                
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center;overflow:auto;padding:20px;';
+                
+                const content = document.createElement('div');
+                content.style.cssText = 'background:white;padding:30px;border-radius:12px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;';
+                
+                const title = document.createElement('h2');
+                title.textContent = `신청서 ${index + 1} / ${submissions.length}`;
+                title.style.cssText = 'margin-bottom:20px;color:#333;text-align:center;';
+                
+                const info = document.createElement('div');
+                info.style.cssText = 'font-size:14px;line-height:1.8;color:#333;';
+                info.innerHTML = `
+                    <p><strong>제출 일시:</strong> ${sub.date} ${sub.time}</p>
+                    <p><strong>이름:</strong> ${sub.name || '-'}</p>
+                    <p><strong>성별:</strong> ${sub.gender || '-'}</p>
+                    <p><strong>나이:</strong> ${sub.age || '-'}</p>
+                    <p><strong>연락처:</strong> ${sub.phone || '-'}</p>
+                    <p><strong>직업:</strong> ${sub.job || '-'}</p>
+                    <p><strong>MBTI:</strong> ${sub.mbti || '-'}</p>
+                    <p><strong>이상형:</strong> ${sub.ideal_type || '-'}</p>
+                    <p><strong>음료:</strong> ${sub.beverage || '-'}</p>
+                    <p><strong>알러지:</strong> ${sub.allergy || '-'}</p>
+                    <p><strong>촬영 동의:</strong> ${sub.video || '-'}</p>
+                    <p><strong>개인정보 동의:</strong> ${sub.privacy || '-'}</p>
+                    <p><strong>참석 날짜:</strong> ${sub.event_date || '-'}</p>
+                `;
+                
+                if (sub.photo1) {
+                    const photo1Label = document.createElement('p');
+                    photo1Label.innerHTML = '<strong>사진 1:</strong>';
+                    photo1Label.style.marginTop = '15px';
+                    info.appendChild(photo1Label);
+                    
+                    const img1 = document.createElement('img');
+                    img1.src = sub.photo1;
+                    img1.style.cssText = 'max-width:100%;border-radius:8px;margin-top:5px;';
+                    info.appendChild(img1);
+                }
+                
+                if (sub.photo2) {
+                    const photo2Label = document.createElement('p');
+                    photo2Label.innerHTML = '<strong>사진 2:</strong>';
+                    photo2Label.style.marginTop = '15px';
+                    info.appendChild(photo2Label);
+                    
+                    const img2 = document.createElement('img');
+                    img2.src = sub.photo2;
+                    img2.style.cssText = 'max-width:100%;border-radius:8px;margin-top:5px;';
+                    info.appendChild(img2);
+                }
+                
+                const btnContainer = document.createElement('div');
+                btnContainer.style.cssText = 'margin-top:20px;display:flex;gap:10px;justify-content:center;';
+                
+                if (index > 0) {
+                    const prevBtn = document.createElement('button');
+                    prevBtn.textContent = '⬅️ 이전';
+                    prevBtn.style.cssText = 'background:#0b84ff;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;';
+                    prevBtn.onclick = () => {
+                        document.body.removeChild(modal);
+                        showSubmission(index - 1);
+                    };
+                    btnContainer.appendChild(prevBtn);
+                }
+                
+                if (index < submissions.length - 1) {
+                    const nextBtn = document.createElement('button');
+                    nextBtn.textContent = '다음 ➡️';
+                    nextBtn.style.cssText = 'background:#0b84ff;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;';
+                    nextBtn.onclick = () => {
+                        document.body.removeChild(modal);
+                        showSubmission(index + 1);
+                    };
+                    btnContainer.appendChild(nextBtn);
+                }
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = '닫기';
+                closeBtn.style.cssText = 'background:#666;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;';
+                closeBtn.onclick = () => document.body.removeChild(modal);
+                btnContainer.appendChild(closeBtn);
+                
+                content.appendChild(title);
+                content.appendChild(info);
+                content.appendChild(btnContainer);
+                modal.appendChild(content);
+                document.body.appendChild(modal);
+            }
+
+            showSubmission(0);
+        }
+
         function downloadAllCSV() {
             if (submissions.length === 0) {
                 alert('다운로드할 데이터가 없습니다.');
                 return;
             }
 
-            let csv = '\uFEFF';
-            csv += '일자,시간,이름,나이,직업,MBTI,이상형,사진,개인정보동의,참석날짜\n';
+            let csv = '일자,시간,이름,성별,나이,연락처,직업,MBTI,이상형,사진1,사진2,음료,알러지,촬영동의,개인정보동의,참석날짜\n';
 
             submissions.forEach(sub => {
-                csv += `"${sub.date}","${sub.time}","${sub.name || ''}","${sub.age || ''}","${sub.job || ''}","${sub.mbti || ''}","${sub.ideal_type || ''}","${sub.photo ? 'O' : 'X'}","${sub.privacy || ''}","${sub.date_choice || sub.date || ''}"\n`;
+                csv += (sub.date || '') + ',' + (sub.time || '') + ',' + (sub.name || '') + ',' + (sub.gender || '') + ',' + (sub.age || '') + ',' + (sub.phone || '') + ',' + (sub.job || '') + ',' + (sub.mbti || '') + ',' + (sub.ideal_type || '') + ',' + (sub.photo1 ? 'O' : 'X') + ',' + (sub.photo2 ? 'O' : 'X') + ',' + (sub.beverage || '') + ',' + (sub.allergy || '') + ',' + (sub.video || '') + ',' + (sub.privacy || '') + ',' + (sub.event_date || '') + '\n';
             });
 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `duzzoncu_ting_전체데이터_${new Date().toISOString().split('T')[0]}.csv`);
-            link.click();
+            // 모달 창 생성
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;';
+            
+            const content = document.createElement('div');
+            content.style.cssText = 'background:white;padding:20px;border-radius:12px;max-width:90%;max-height:80%;overflow:auto;';
+            
+            const title = document.createElement('h3');
+            title.textContent = '전체 데이터 (복사해서 사용하세요)';
+            title.style.cssText = 'margin-bottom:10px;color:#333;';
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = csv;
+            textarea.style.cssText = 'width:600px;height:400px;font-family:monospace;font-size:12px;padding:10px;border:1px solid #ddd;border-radius:8px;';
+            textarea.readOnly = true;
+            
+            const copyBtn = document.createElement('button');
+            copyBtn.textContent = '📋 복사하기';
+            copyBtn.style.cssText = 'background:#0b84ff;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;margin-right:10px;';
+            copyBtn.onclick = () => {
+                textarea.select();
+                document.execCommand('copy');
+                alert('복사되었습니다! 엑셀에 붙여넣기 하세요.');
+            };
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '닫기';
+            closeBtn.style.cssText = 'background:#666;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;';
+            closeBtn.onclick = () => document.body.removeChild(modal);
+            
+            content.appendChild(title);
+            content.appendChild(textarea);
+            content.appendChild(copyBtn);
+            content.appendChild(closeBtn);
+            modal.appendChild(content);
+            document.body.appendChild(modal);
         }
 
         function downloadTodayCSV() {
@@ -644,19 +1130,48 @@
                 return;
             }
 
-            let csv = '\uFEFF';
-            csv += '일자,시간,이름,나이,직업,MBTI,이상형,사진,개인정보동의,참석날짜\n';
+            let csv = '일자,시간,이름,성별,나이,연락처,직업,MBTI,이상형,사진1,사진2,음료,알러지,촬영동의,개인정보동의,참석날짜\n';
 
             todaySubmissions.forEach(sub => {
-                csv += `"${sub.date}","${sub.time}","${sub.name || ''}","${sub.age || ''}","${sub.job || ''}","${sub.mbti || ''}","${sub.ideal_type || ''}","${sub.photo ? 'O' : 'X'}","${sub.privacy || ''}","${sub.date_choice || sub.date || ''}"\n`;
+                csv += (sub.date || '') + ',' + (sub.time || '') + ',' + (sub.name || '') + ',' + (sub.gender || '') + ',' + (sub.age || '') + ',' + (sub.phone || '') + ',' + (sub.job || '') + ',' + (sub.mbti || '') + ',' + (sub.ideal_type || '') + ',' + (sub.photo1 ? 'O' : 'X') + ',' + (sub.photo2 ? 'O' : 'X') + ',' + (sub.beverage || '') + ',' + (sub.allergy || '') + ',' + (sub.video || '') + ',' + (sub.privacy || '') + ',' + (sub.event_date || '') + '\n';
             });
 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `duzzoncu_ting_오늘데이터_${new Date().toISOString().split('T')[0]}.csv`);
-            link.click();
+            // 모달 창 생성
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;';
+            
+            const content = document.createElement('div');
+            content.style.cssText = 'background:white;padding:20px;border-radius:12px;max-width:90%;max-height:80%;overflow:auto;';
+            
+            const title = document.createElement('h3');
+            title.textContent = '오늘 데이터 (복사해서 사용하세요)';
+            title.style.cssText = 'margin-bottom:10px;color:#333;';
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = csv;
+            textarea.style.cssText = 'width:600px;height:400px;font-family:monospace;font-size:12px;padding:10px;border:1px solid #ddd;border-radius:8px;';
+            textarea.readOnly = true;
+            
+            const copyBtn = document.createElement('button');
+            copyBtn.textContent = '📋 복사하기';
+            copyBtn.style.cssText = 'background:#0b84ff;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;margin-right:10px;';
+            copyBtn.onclick = () => {
+                textarea.select();
+                document.execCommand('copy');
+                alert('복사되었습니다! 엑셀에 붙여넣기 하세요.');
+            };
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '닫기';
+            closeBtn.style.cssText = 'background:#666;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:10px;';
+            closeBtn.onclick = () => document.body.removeChild(modal);
+            
+            content.appendChild(title);
+            content.appendChild(textarea);
+            content.appendChild(copyBtn);
+            content.appendChild(closeBtn);
+            modal.appendChild(content);
+            document.body.appendChild(modal);
         }
 
         async function clearAllData() {
@@ -679,7 +1194,11 @@
             }
         }
 
-        loadData();
+        document.getElementById('adminPassword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkAdminPassword();
+            }
+        });
     </script>
 </body>
 </html>
