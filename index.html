@@ -584,17 +584,15 @@
             if (!isAdminLoggedIn) return;
             
             try {
-                const result = await window.storage.list('submission:');
-                if (result && result.keys) {
-                    submissions = [];
-                    for (const key of result.keys) {
-                        const data = await window.storage.get(key);
-                        if (data && data.value) {
-                            submissions.push(JSON.parse(data.value));
-                        }
+                const keys = Object.keys(localStorage).filter(key => key.startsWith('submission:'));
+                submissions = [];
+                for (const key of keys) {
+                    const data = localStorage.getItem(key);
+                    if (data) {
+                        submissions.push(JSON.parse(data));
                     }
-                    updateDataCount();
                 }
+                updateDataCount();
             } catch (error) {
                 console.log('데이터 로드 중 오류:', error);
             }
@@ -951,7 +949,7 @@
             };
 
             try {
-                await window.storage.set(`submission:${submission.id}`, JSON.stringify(submission));
+                localStorage.setItem(`submission:${submission.id}`, JSON.stringify(submission));
                 
                 setTimeout(() => {
                     resetToWelcome();
@@ -1180,11 +1178,9 @@
             }
 
             try {
-                const result = await window.storage.list('submission:');
-                if (result && result.keys) {
-                    for (const key of result.keys) {
-                        await window.storage.delete(key);
-                    }
+                const keys = Object.keys(localStorage).filter(key => key.startsWith('submission:'));
+                for (const key of keys) {
+                    localStorage.removeItem(key);
                 }
                 submissions = [];
                 updateDataCount();
