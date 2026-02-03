@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duzzoncu Ting</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #000;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 2px;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.received .bubble {
+            background: #2c2c2e;
+            color: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.sent .bubble {
+            background: #0b84ff;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bubble.image-bubble {
+            padding: 4px;
+            background: transparent;
+        }
+
+        .bubble img {
+            max-width: 100%;
+            border-radius: 16px;
+            display: block;
+        }
+
+        .input-area {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 10px 15px;
+            border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            background: #1c1c1e;
+            border-radius: 20px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-container input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            padding: 4px 8px;
+            outline: none;
+        }
+
+        .input-container input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .send-button {
+            background: #0b84ff;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .send-button:hover {
+            opacity: 0.8;
+        }
+
+        .send-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .send-button svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .option-button {
+            background: #1c1c1e;
+            color: #0b84ff;
+            border: 1px solid #0b84ff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-button:hover {
+            background: #0b84ff;
+            color: white;
+        }
+
+        .image-upload-btn {
+            background: #1c1c1e;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 12px 24px;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .image-upload-btn:hover {
+            background: #2c2c2e;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: white;
+            font-size: 15px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .admin-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            display: none;
+            max-width: 300px;
+            z-index: 1000;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0b84ff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(11, 132, 255, 0.4);
+            z-index: 999;
+        }
+
+        .admin-button {
+            background: #0b84ff;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .admin-button:hover {
+            opacity: 0.8;
+        }
+
+        .admin-button.danger {
+            background: #ff3b30;
+        }
+
+        .admin-panel h3 {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .admin-panel p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .start-button {
+            background: #0b84ff;
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 24px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 12px rgba(11, 132, 255, 0.4);
+        }
+
+        .start-button:hover {
+            opacity: 0.9;
+        }
+
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .welcome-screen h2 {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .welcome-screen p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💬 Duzzoncu Ting</h1>
+        <p>채팅으로 정보 공유하기</p>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="welcome-screen" id="welcomeScreen">
+            <h2>🎉</h2>
+            <p>duzzoncu_ting에 오신 것을 환영합니다!</p>
+            <button class="start-button" onclick="startChat()">대화 시작하기</button>
+        </div>
+    </div>
+
+    <div class="input-area" id="inputArea" style="display: none;">
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="메시지" disabled>
+            <button class="send-button" id="sendButton" disabled>
+                <svg viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <button class="admin-toggle" onclick="toggleAdmin()">📊</button>
+    
+    <div class="admin-panel" id="adminPanel">
+        <h3>관리자 패널</h3>
+        <p id="dataCount">제출된 데이터: 0개</p>
+        <button class="admin-button" onclick="downloadAllCSV()">📥 전체 데이터 다운로드</button>
+        <button class="admin-button" onclick="downloadTodayCSV()">📅 오늘 데이터 다운로드</button>
+        <button class="admin-button danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
+    </div>
+
+    <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;">
+
+    <script>
+        let currentStep = 0;
+        let userData = {};
+        let submissions = [];
+
+        const questions = [
+            { id: 'name', text: '안녕하세요! 먼저 이름을 알려주세요 😊', type: 'text' },
+            { id: 'age', text: '나이가 어떻게 되시나요?', type: 'text' },
+            { id: 'job', text: '직업이 무엇인가요?', type: 'text' },
+            { id: 'mbti', text: 'MBTI가 무엇인가요?', type: 'options', options: ['ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ', '모름'] },
+            { id: 'ideal_type', text: '이상형을 간단히 설명해주세요! 💕', type: 'text' },
+            { id: 'photo', text: '사진을 올려주세요 📸', type: 'image' },
+            { id: 'privacy', text: '개인정보 수집 및 이용에 동의하시나요?\n\n수집된 정보는 행사 운영 목적으로만 사용되며, 행사 종료 후 파기됩니다.', type: 'checkbox' },
+            { id: 'date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (토)', '3/1 (토)', '3/8 (토)'] }
+        ];
+
+        async function loadData() {
+            try {
+                const result = await window.storage.list('submission:');
+                if (result && result.keys) {
+                    submissions = [];
+                    for (const key of result.keys) {
+                        const data = await window.storage.get(key);
+                        if (data && data.value) {
+                            submissions.push(JSON.parse(data.value));
+                        }
+                    }
+                    updateDataCount();
+                }
+            } catch (error) {
+                console.log('데이터 로드 중 오류:', error);
+            }
+        }
+
+        function updateDataCount() {
+            document.getElementById('dataCount').textContent = `제출된 데이터: ${submissions.length}개`;
+        }
+
+        function startChat() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('inputArea').style.display = 'block';
+            askQuestion();
+        }
+
+        function addMessage(text, type, isImage = false, imageData = null) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = isImage ? 'bubble image-bubble' : 'bubble';
+            
+            if (isImage && imageData) {
+                const img = document.createElement('img');
+                img.src = imageData;
+                bubble.appendChild(img);
+            } else {
+                bubble.textContent = text;
+            }
+            
+            messageDiv.appendChild(bubble);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addOptions(options) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message received';
+            
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = option;
+                button.onclick = () => handleOptionClick(option);
+                optionsContainer.appendChild(button);
+            });
+            
+            messageDiv.appendChild(optionsContainer);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addImageUpload() {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message received';
+            
+            const uploadBtn = document.createElement('button');
+            uploadBtn.className = 'image-upload-btn';
+            uploadBtn.innerHTML = '📷 사진 선택하기';
+            uploadBtn.onclick = () => document.getElementById('hiddenFileInput').click();
+            
+            messageDiv.appendChild(uploadBtn);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function addCheckbox() {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message received';
+            
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.className = 'checkbox-container';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'privacyCheckbox';
+            checkbox.onchange = () => {
+                if (checkbox.checked) {
+                    handleAnswer('동의함', true);
+                }
+            };
+            
+            const label = document.createElement('label');
+            label.htmlFor = 'privacyCheckbox';
+            label.textContent = '동의합니다';
+            
+            checkboxContainer.appendChild(checkbox);
+            checkboxContainer.appendChild(label);
+            messageDiv.appendChild(checkboxContainer);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function askQuestion() {
+            if (currentStep >= questions.length) {
+                finishChat();
+                return;
+            }
+
+            const question = questions[currentStep];
+            
+            setTimeout(() => {
+                addMessage(question.text, 'received');
+                
+                if (question.type === 'options') {
+                    addOptions(question.options);
+                } else if (question.type === 'image') {
+                    addImageUpload();
+                } else if (question.type === 'checkbox') {
+                    addCheckbox();
+                } else if (question.type === 'text') {
+                    enableInput();
+                }
+            }, 500);
+        }
+
+        function enableInput() {
+            const input = document.getElementById('messageInput');
+            const button = document.getElementById('sendButton');
+            input.disabled = false;
+            button.disabled = false;
+            input.focus();
+        }
+
+        function disableInput() {
+            const input = document.getElementById('messageInput');
+            const button = document.getElementById('sendButton');
+            input.disabled = true;
+            button.disabled = true;
+        }
+
+        function handleAnswer(answer, skipDisplay = false) {
+            if (!skipDisplay) {
+                addMessage(answer, 'sent');
+            }
+            
+            const question = questions[currentStep];
+            userData[question.id] = answer;
+            
+            currentStep++;
+            disableInput();
+            
+            document.getElementById('messageInput').value = '';
+            
+            setTimeout(() => {
+                askQuestion();
+            }, 300);
+        }
+
+        function handleOptionClick(option) {
+            handleAnswer(option);
+        }
+
+        document.getElementById('sendButton').addEventListener('click', () => {
+            const input = document.getElementById('messageInput');
+            const answer = input.value.trim();
+            
+            if (answer) {
+                handleAnswer(answer);
+            }
+        });
+
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('sendButton').click();
+            }
+        });
+
+        document.getElementById('hiddenFileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const imageData = event.target.result;
+                    addMessage('', 'sent', true, imageData);
+                    userData[questions[currentStep].id] = imageData;
+                    currentStep++;
+                    setTimeout(() => {
+                        askQuestion();
+                    }, 300);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function finishChat() {
+            addMessage('감사합니다! 제출이 완료되었습니다 🎉', 'received');
+            
+            const submission = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString('ko-KR'),
+                time: new Date().toLocaleTimeString('ko-KR'),
+                ...userData
+            };
+
+            try {
+                await window.storage.set(`submission:${submission.id}`, JSON.stringify(submission));
+                submissions.push(submission);
+                updateDataCount();
+                
+                setTimeout(() => {
+                    addMessage('새로운 참가자를 받기 위해 페이지를 새로고침해주세요!', 'received');
+                }, 1000);
+            } catch (error) {
+                addMessage('저장 중 오류가 발생했습니다. 다시 시도해주세요.', 'received');
+            }
+        }
+
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('active');
+        }
+
+        function downloadAllCSV() {
+            if (submissions.length === 0) {
+                alert('다운로드할 데이터가 없습니다.');
+                return;
+            }
+
+            let csv = '\uFEFF';
+            csv += '일자,시간,이름,나이,직업,MBTI,이상형,사진,개인정보동의,참석날짜\n';
+
+            submissions.forEach(sub => {
+                csv += `"${sub.date}","${sub.time}","${sub.name || ''}","${sub.age || ''}","${sub.job || ''}","${sub.mbti || ''}","${sub.ideal_type || ''}","${sub.photo ? 'O' : 'X'}","${sub.privacy || ''}","${sub.date_choice || sub.date || ''}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `duzzoncu_ting_전체데이터_${new Date().toISOString().split('T')[0]}.csv`);
+            link.click();
+        }
+
+        function downloadTodayCSV() {
+            const today = new Date().toLocaleDateString('ko-KR');
+            const todaySubmissions = submissions.filter(sub => sub.date === today);
+
+            if (todaySubmissions.length === 0) {
+                alert('오늘 제출된 데이터가 없습니다.');
+                return;
+            }
+
+            let csv = '\uFEFF';
+            csv += '일자,시간,이름,나이,직업,MBTI,이상형,사진,개인정보동의,참석날짜\n';
+
+            todaySubmissions.forEach(sub => {
+                csv += `"${sub.date}","${sub.time}","${sub.name || ''}","${sub.age || ''}","${sub.job || ''}","${sub.mbti || ''}","${sub.ideal_type || ''}","${sub.photo ? 'O' : 'X'}","${sub.privacy || ''}","${sub.date_choice || sub.date || ''}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `duzzoncu_ting_오늘데이터_${new Date().toISOString().split('T')[0]}.csv`);
+            link.click();
+        }
+
+        async function clearAllData() {
+            if (!confirm('정말로 모든 데이터를 삭제하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                const result = await window.storage.list('submission:');
+                if (result && result.keys) {
+                    for (const key of result.keys) {
+                        await window.storage.delete(key);
+                    }
+                }
+                submissions = [];
+                updateDataCount();
+                alert('모든 데이터가 삭제되었습니다.');
+            } catch (error) {
+                alert('삭제 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
