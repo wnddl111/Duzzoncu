@@ -15,6 +15,36 @@
       flex-direction: column;
     }
 
+    /* 첫 화면 - 카페 배경 이미지만 */
+    .intro-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background-image: url('cafe_bg.jpg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .intro-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 0;
+    }
+
+    .intro-screen > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 공지사항 화면 - 흰 배경 */
     .welcome-screen {
       display: flex;
       flex-direction: column;
@@ -23,29 +53,8 @@
       height: 100%;
       padding: 20px;
       overflow-y: auto;
-      background-image: url('cafe_bg.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      background: #ffffff;
       position: relative;
-    }
-
-    /* 배경 오버레이 추가 (텍스트 가독성 향상) */
-    .welcome-screen::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(2px);
-      z-index: 0;
-    }
-
-    .welcome-screen > * {
-      position: relative;
-      z-index: 1;
     }
 
     .header {
@@ -326,7 +335,12 @@
   </div>
 
   <div class="chat-container" id="chatContainer">
-    <div class="welcome-screen" id="welcomeScreen" style="display:flex;">
+    <!-- 인트로 화면 (2초간 표시) -->
+    <div class="intro-screen" id="introScreen" style="display:flex;">
+    </div>
+
+    <!-- 공지사항 화면 -->
+    <div class="welcome-screen" id="welcomeScreen" style="display:none;">
       <div class="notice-content">
         <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 소개팅]</strong>
         딱딱하고 각 잡힌 소개팅 말고<br>
@@ -391,6 +405,14 @@
     let userData = {};
     let uploadedImages = [];
 
+    // 페이지 로드 시 2초 후 공지사항 화면으로 이동
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('introScreen').style.display = 'none';
+        document.getElementById('welcomeScreen').style.display = 'flex';
+      }, 2000);
+    });
+
     const questions = [
       { id: 'greeting1', text: '안녕하세요! 두쫀쿠팅이에요 ㅎㅎ', type: 'greeting' },
       { id: 'greeting2', text: '원활한 진행을 위해 몇 가지 개인 정보를 수집하고 있어요', type: 'greeting' },
@@ -409,23 +431,23 @@
       { id: 'event_date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (일) 오후 3-5시','3/1 (일) 오후 3-5시','3/8 (일) 오후 3-5시'] }
     ];
 
-    // 업로드한 이미지를 배경으로 설정
-    function setWelcomeBackground(imageUrl) {
-      const welcomeScreen = document.getElementById('welcomeScreen');
-      if (welcomeScreen) {
-        welcomeScreen.style.backgroundImage = `url('${imageUrl}')`;
-      }
-    }
-
     function resetToWelcome() {
       currentStep = 0;
       userData = {};
       uploadedImages = [];
       document.getElementById('chatContainer').innerHTML = '';
+      
+      // 인트로 화면 추가
+      const introDiv = document.createElement('div');
+      introDiv.className = 'intro-screen';
+      introDiv.id = 'introScreen';
+      introDiv.style.display = 'flex';
+      
+      // 공지사항 화면 추가
       const welcomeDiv = document.createElement('div');
       welcomeDiv.className = 'welcome-screen';
       welcomeDiv.id = 'welcomeScreen';
-      welcomeDiv.style.display = 'flex';
+      welcomeDiv.style.display = 'none';
       welcomeDiv.innerHTML = `
         <div class="notice-content">
           <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 소개팅]</strong>
@@ -467,8 +489,16 @@
         </div>
         <button class="start-button" onclick="startChat()">신청서 작성하기</button>
       `;
+      
+      document.getElementById('chatContainer').appendChild(introDiv);
       document.getElementById('chatContainer').appendChild(welcomeDiv);
       document.getElementById('inputArea').style.display = 'none';
+      
+      // 2초 후 공지사항 화면으로 전환
+      setTimeout(() => {
+        introDiv.style.display = 'none';
+        welcomeDiv.style.display = 'flex';
+      }, 2000);
     }
 
     function startChat() {
@@ -675,9 +705,6 @@
         const resizedImages = await Promise.all(
           files.map(file => fileToResizedDataUrl(file, 0.7))
         );
-
-        // 첫 번째 이미지를 welcome screen 배경으로 설정
-        setWelcomeBackground(resizedImages[0]);
 
         // 이미지 프리뷰 컨테이너 생성
         const chatContainer = document.getElementById('chatContainer');
