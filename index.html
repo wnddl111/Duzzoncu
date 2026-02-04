@@ -286,7 +286,7 @@
   <div class="chat-container" id="chatContainer">
     <div class="welcome-screen" id="welcomeScreen" style="display:flex;">
       <div class="notice-content">
-        <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 진행하는 소개팅]</strong>
+        <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 소개팅]</strong>
         딱딱하고 각 잡힌 소개팅 말고<br>
         두쫀쿠팅 어때요?<br><br>
         예쁜 카페에 함께 모여<br>
@@ -311,7 +311,7 @@
         <div class="notice-divider"></div>
         <strong>🎂 참여 조건</strong>
         <ul>
-          <li>1992년생 ~ 2000년생</li>
+          <li>1994년생 ~ 2002년생</li>
           <li>두쫀쿠를 좋아하는 분</li>
           <li>174cm 이상(남성)</li>
         </ul>
@@ -354,7 +354,7 @@
       { id: 'greeting2', text: '원활한 진행을 위해 몇 가지 개인 정보를 수집하고 있어요', type: 'greeting' },
       { id: 'name', text: '먼저 이름을 알려주세요 😊', type: 'text' },
       { id: 'gender', text: '성별을 선택해주세요', type: 'options', options: ['남성', '여성'] },
-      { id: 'age', text: '나이가 어떻게 되시나요?', type: 'text' },
+      { id: 'age', text: '나이가 어떻게 되시나요?\n(예: 2000년생)', type: 'text' },
       { id: 'phone', text: '연락처를 알려주세요\n(예: 010-1234-5678)', type: 'text' },
       { id: 'job', text: '직업이 무엇인가요?', type: 'text' },
       { id: 'mbti', text: 'MBTI가 무엇인가요?', type: 'options', options: ['ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ','모름'] },
@@ -365,7 +365,7 @@
       { id: 'allergy', text: '견과류 알러지가 있으신가요?', type: 'options', options: ['있음','없음'] },
       { id: 'video', text: '[촬영 동의]\n\n후기 콘텐츠 제작을 위해 진행에 방해되지 않는 선에서 촬영이 있을 예정입니다.\n\n얼굴은 전체 모자이크 처리될 예정이며 이외의 목적에는 사용되지 않습니다.', type: 'checkbox' },
       { id: 'privacy', text: '[개인정보 수집 및 이용 동의]\n\n서비스 제공(목적)을 위해 상기 정보를 수집하며, 수집된 정보는 행사 운영 목적으로만 사용되며 행사 종료 후 자동 파기됩니다.', type: 'checkbox' },
-      { id: 'event_date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (일) 오후 3-6시','3/1 (일) 오후 3-6시','3/8 (일) 오후 3-6시'] }
+      { id: 'event_date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (일) 오후 3-5시','3/1 (일) 오후 3-5시','3/8 (일) 오후 3-5시'] }
     ];
 
     function resetToWelcome() {
@@ -378,7 +378,7 @@
       welcomeDiv.style.display = 'flex';
       welcomeDiv.innerHTML = `
         <div class="notice-content">
-          <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 진행하는 소개팅]</strong>
+          <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 소개팅]</strong>
           딱딱하고 각 잡힌 소개팅 말고<br>
           두쫀쿠팅 어때요?<br><br>
           예쁜 카페에 함께 모여<br>
@@ -403,7 +403,7 @@
           <div class="notice-divider"></div>
           <strong>🎂 참여 조건</strong>
           <ul>
-            <li>1992년생 ~ 2000년생</li>
+            <li>1994년생 ~ 2002년생</li>
             <li>두쫀쿠를 좋아하는 분</li>
             <li>174cm 이상(남성)</li>
           </ul>
