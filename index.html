@@ -30,6 +30,24 @@
       position: relative;
     }
 
+    /* 배경 오버레이 추가 (텍스트 가독성 향상) */
+    .welcome-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(2px);
+      z-index: 0;
+    }
+
+    .welcome-screen > * {
+      position: relative;
+      z-index: 1;
+    }
+
     .header {
       background: rgba(245, 245, 245, 0.95);
       backdrop-filter: blur(20px);
@@ -261,11 +279,31 @@
       font-weight: 500;
     }
 
+    /* 이미지 미리보기 컨테이너 */
+    .image-preview-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .image-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid #0b84ff;
+    }
+
     @media (max-width: 768px) {
       .welcome-screen { padding: 15px; }
       .welcome-screen .notice-content { font-size: 12px; padding: 15px; max-width: 100%; }
       .start-button { padding: 12px 28px; font-size: 14px; }
       textarea { max-width: 100% !important; width: 100% !important; }
+      .image-preview {
+        width: 120px;
+        height: 120px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -273,6 +311,10 @@
       .header h1 { font-size: 14px; }
       .header p { font-size: 10px; }
       .start-button { padding: 10px 24px; font-size: 13px; }
+      .image-preview {
+        width: 100px;
+        height: 100px;
+      }
     }
   </style>
 </head>
@@ -339,8 +381,7 @@
     </div>
   </div>
 
-  <input type="file" id="hiddenFileInput" accept="image/*" style="display:none;">
-  <input type="file" id="hiddenFileInput2" accept="image/*" style="display:none;">
+  <input type="file" id="hiddenFileInput" accept="image/*" multiple style="display:none;">
 
   <script>
     // ✅ 너의 Web App URL
@@ -348,6 +389,7 @@
 
     let currentStep = 0;
     let userData = {};
+    let uploadedImages = [];
 
     const questions = [
       { id: 'greeting1', text: '안녕하세요! 두쫀쿠팅이에요 ㅎㅎ', type: 'greeting' },
@@ -359,8 +401,7 @@
       { id: 'job', text: '직업이 무엇인가요?', type: 'text' },
       { id: 'mbti', text: 'MBTI가 무엇인가요?', type: 'options', options: ['ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ','모름'] },
       { id: 'ideal_type', text: '이상형을 간단히 설명해주세요! 💕', type: 'text' },
-      { id: 'photo1', text: '모두가 즐거운 소셜링을 만들기 위해 사진 두 장을 받고 있습니다.\n\n외모 및 신원 확인을 위한 과정이니 양해 부탁드려요!\n남녀 똑같이 확인하고 있답니다 ㅎㅎ\n\n첫 번째 사진을 올려주세요 📸', type: 'image' },
-      { id: 'photo2', text: '두 번째 사진도 올려주세요 📸', type: 'image' },
+      { id: 'photos', text: '모두가 즐거운 소셜링을 만들기 위해 사진 두 장을 받고 있습니다.\n\n외모 및 신원 확인을 위한 과정이니 양해 부탁드려요!\n남녀 똑같이 확인하고 있답니다 ㅎㅎ\n\n사진 두 장을 선택해주세요 📸', type: 'images' },
       { id: 'beverage', text: '간단한 음료를 제공하고 있습니다.\n커피와 아이스티 중 어떤 걸 선호하시나요? ☕', type: 'options', options: ['커피','아이스티'] },
       { id: 'allergy', text: '견과류 알러지가 있으신가요?', type: 'options', options: ['있음','없음'] },
       { id: 'video', text: '[촬영 동의]\n\n후기 콘텐츠 제작을 위해 진행에 방해되지 않는 선에서 촬영이 있을 예정입니다.\n\n얼굴은 전체 모자이크 처리될 예정이며 이외의 목적에는 사용되지 않습니다.', type: 'checkbox' },
@@ -368,9 +409,18 @@
       { id: 'event_date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (일) 오후 3-5시','3/1 (일) 오후 3-5시','3/8 (일) 오후 3-5시'] }
     ];
 
+    // 업로드한 이미지를 배경으로 설정
+    function setWelcomeBackground(imageUrl) {
+      const welcomeScreen = document.getElementById('welcomeScreen');
+      if (welcomeScreen) {
+        welcomeScreen.style.backgroundImage = `url('${imageUrl}')`;
+      }
+    }
+
     function resetToWelcome() {
       currentStep = 0;
       userData = {};
+      uploadedImages = [];
       document.getElementById('chatContainer').innerHTML = '';
       const welcomeDiv = document.createElement('div');
       welcomeDiv.className = 'welcome-screen';
@@ -469,17 +519,16 @@
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    function addImageUpload(isSecondPhoto = false) {
+    function addMultiImageUpload() {
       const chatContainer = document.getElementById('chatContainer');
       const messageDiv = document.createElement('div');
       messageDiv.className = 'message received';
 
       const uploadBtn = document.createElement('button');
       uploadBtn.className = 'image-upload-btn';
-      uploadBtn.innerHTML = '📷 사진 선택하기';
+      uploadBtn.innerHTML = '📷 사진 2장 선택하기';
       uploadBtn.onclick = () => {
-        if (isSecondPhoto) document.getElementById('hiddenFileInput2').click();
-        else document.getElementById('hiddenFileInput').click();
+        document.getElementById('hiddenFileInput').click();
       };
 
       messageDiv.appendChild(uploadBtn);
@@ -530,8 +579,8 @@
           askQuestion();
         } else if (question.type === 'options') {
           addOptions(question.options);
-        } else if (question.type === 'image') {
-          addImageUpload(question.id === 'photo2');
+        } else if (question.type === 'images') {
+          addMultiImageUpload();
         } else if (question.type === 'checkbox') {
           addCheckbox(question.id);
         } else if (question.type === 'text') {
@@ -613,31 +662,50 @@
     }
 
     document.getElementById('hiddenFileInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
 
-      try {
-        const resizedImage = await fileToResizedDataUrl(file, 0.7);
-        addMessage('', 'sent', true, resizedImage);
-        userData[questions[currentStep].id] = resizedImage;
-        currentStep++;
-        setTimeout(() => askQuestion(), 300);
-      } catch (err) {
-        console.error(err);
-        addMessage('이미지 처리 중 오류가 발생했습니다. 다시 시도해주세요.', 'received');
-      } finally {
+      if (files.length !== 2) {
+        addMessage('사진을 정확히 2장 선택해주세요.', 'received');
         e.target.value = '';
+        return;
       }
-    });
-
-    document.getElementById('hiddenFileInput2').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
 
       try {
-        const resizedImage = await fileToResizedDataUrl(file, 0.7);
-        addMessage('', 'sent', true, resizedImage);
-        userData[questions[currentStep].id] = resizedImage;
+        const resizedImages = await Promise.all(
+          files.map(file => fileToResizedDataUrl(file, 0.7))
+        );
+
+        // 첫 번째 이미지를 welcome screen 배경으로 설정
+        setWelcomeBackground(resizedImages[0]);
+
+        // 이미지 프리뷰 컨테이너 생성
+        const chatContainer = document.getElementById('chatContainer');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message sent';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+
+        const previewContainer = document.createElement('div');
+        previewContainer.className = 'image-preview-container';
+
+        resizedImages.forEach(imgData => {
+          const img = document.createElement('img');
+          img.src = imgData;
+          img.className = 'image-preview';
+          previewContainer.appendChild(img);
+        });
+
+        bubble.appendChild(previewContainer);
+        messageDiv.appendChild(bubble);
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        userData['photo1'] = resizedImages[0];
+        userData['photo2'] = resizedImages[1];
+        uploadedImages = resizedImages;
+        
         currentStep++;
         setTimeout(() => askQuestion(), 300);
       } catch (err) {
@@ -659,30 +727,8 @@
         ...userData
       };
 
-      try {
-        const res = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(submission)
-        });
-        
-        // GAS 응답 파싱 (에러 안 나게)
-        let out = { ok: true };
-        try {
-          out = await res.json();
-        } catch (e) {}
-        
-        if (!res.ok || out.ok === false) {
-          throw new Error(out.error || `HTTP ${res.status}`);
-        }
+      // 로컬 테스트 모드 (localhost에서 실행 
 
-        setTimeout(() => resetToWelcome(), 2000);
-
-      } catch (error) {
-        console.error("GAS 저장 오류:", error);
-        addMessage('저장 중 오류가 발생했습니다: ' + error.message, 'received');
-      }
-    }
   </script>
 </body>
 </html>
