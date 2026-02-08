@@ -196,6 +196,11 @@
       color: white;
     }
 
+    .option-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .image-upload-btn {
       background: #ffffff;
       border: 1px solid rgba(0,0,0,0.2);
@@ -388,9 +393,12 @@
 
         <strong>2부 : 두쫀쿠 꾸미기 & 로테이션 타임</strong>
         가장 마음에 드는 이성에게 선물할 두쫀쿠를 꾸밉니다.<br>
-        동시에 로테이션 타임을 가지며 여러 사람들과 대화합니다.
+        동시에 로테이션 타임을 가지며 여러 사람들과 대화합니다.<br>
         
         <div class="notice-divider"></div>
+        💗외모와 스펙이 검증된 남녀만을 선별하여, 설렘 가득한 만남을 선사하겠습니다.💗
+        <div class="notice-divider"></div>
+        
         <strong>👩‍❤️‍💋‍👨모집 인원수</strong>
         총 16명 모집(남,녀 각각 8명)<br>
         
@@ -402,6 +410,7 @@
         
         <strong> 🥐 장소</strong>
         서울시 서대문구 통일로<br>
+        주차 불가<br>
         (자세한 주소는 승인된 분들에 한해 문자로 개별 안내)
         <div class="notice-divider"></div>
         
@@ -455,12 +464,15 @@
       { id: 'greeting1', text: '안녕하세요! 두쫀쿠팅이에요 ㅎㅎ', type: 'greeting' },
       { id: 'greeting2', text: '원활한 진행을 위해 몇 가지 개인 정보를 수집하고 있어요', type: 'greeting' },
       { id: 'name', text: '먼저 이름을 알려주세요 😊', type: 'text' },
+      { id: 'nickname', text: '소개팅에 사용할 별명을 적어주세요 ⭐', type: 'text' },
       { id: 'gender', text: '성별을 선택해주세요', type: 'options', options: ['남성', '여성'] },
       { id: 'age', text: '나이가 어떻게 되시나요?\n(예: 2000년생)', type: 'text' },
+      { id: 'height', text: '키가 어떻게 되시나요?', type: 'text' },
       { id: 'phone', text: '연락처를 알려주세요\n(예: 010-1234-5678)', type: 'text' },
       { id: 'job', text: '직업이 무엇인가요?', type: 'text' },
       { id: 'mbti', text: 'MBTI가 무엇인가요?', type: 'options', options: ['ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ','모름'] },
       { id: 'ideal_type', text: '이상형을 간단히 설명해주세요! 💕', type: 'text' },
+      { id: 'self_intro', text: '본인을 나타내는 한마디! 🤩', type: 'text' },
       { id: 'photos', text: '모두가 즐거운 소셜링을 만들기 위해 사진 두 장을 받고 있습니다.\n\n외모 및 신원 확인을 위한 과정이니 양해 부탁드려요!\n남녀 똑같이 확인하고 있답니다 ㅎㅎ\n\n사진 두 장을 선택해주세요 📸', type: 'images' },
       { id: 'beverage', text: '간단한 음료를 제공하고 있습니다.\n커피와 아이스티 중 어떤 걸 선호하시나요? ☕', type: 'options', options: ['커피','아이스티'] },
       { id: 'allergy', text: '견과류 알러지가 있으신가요?', type: 'options', options: ['있음','없음'] },
@@ -504,24 +516,27 @@
 
           <strong>2부 : 두쫀쿠 꾸미기 & 로테이션 타임</strong>
           가장 마음에 드는 이성에게 선물할 두쫀쿠를 꾸밉니다.<br>
-          동시에 로테이션 타임을 가지며 여러 사람들과 대화합니다.
+          동시에 로테이션 타임을 가지며 여러 사람들과 대화합니다.<br>
           
           <div class="notice-divider"></div>
+          💗외모와 스펙이 검증된 남녀만을 선별하여, 설렘 가득한 만남을 선사하겠습니다.💗
+          <div class="notice-divider"></div>
+          
           <strong>👩‍❤️‍💋‍👨모집 인원수</strong>
           총 16명 모집(남,녀 각각 8명)<br>
-        
+          
           <div class="notice-divider"></div>
           <strong>📍 금액</strong>
           59,000원<br>
           (계좌는 승인된 분들에 한해 문자로 개별 안내)
           <div class="notice-divider"></div>
-        
+          
           <strong> 🥐 장소</strong>
           서울시 서대문구 통일로<br>
+          주차 불가<br>
           (자세한 주소는 승인된 분들에 한해 문자로 개별 안내)
           <div class="notice-divider"></div>
-        
-          <div class="notice-divider"></div>
+          
           <strong>🎂 참여 조건</strong>
           <ul>
             <li>1994년생 ~ 2002년생</li>
@@ -620,19 +635,51 @@
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = `checkbox_${questionId}`;
-      checkbox.onchange = () => {
-        if (checkbox.checked) handleAnswer('동의함', true);
-      };
 
       const label = document.createElement('label');
       label.htmlFor = `checkbox_${questionId}`;
-      label.textContent = '동의합니다';
+      label.textContent = '동의합니다 (필수)';
 
       checkboxContainer.appendChild(checkbox);
       checkboxContainer.appendChild(label);
       messageDiv.appendChild(checkboxContainer);
 
+      // 확인 버튼 추가
+      const confirmDiv = document.createElement('div');
+      confirmDiv.className = 'message received';
+      confirmDiv.style.marginTop = '10px';
+      
+      const confirmBtn = document.createElement('button');
+      confirmBtn.className = 'option-button';
+      confirmBtn.textContent = '다음';
+      confirmBtn.style.opacity = '0.5';
+      confirmBtn.style.cursor = 'not-allowed';
+      confirmBtn.disabled = true;
+      
+      checkbox.onchange = () => {
+        if (checkbox.checked) {
+          confirmBtn.style.opacity = '1';
+          confirmBtn.style.cursor = 'pointer';
+          confirmBtn.disabled = false;
+        } else {
+          confirmBtn.style.opacity = '0.5';
+          confirmBtn.style.cursor = 'not-allowed';
+          confirmBtn.disabled = true;
+        }
+      };
+      
+      confirmBtn.onclick = () => {
+        if (checkbox.checked) {
+          handleAnswer('동의함', true);
+          confirmDiv.remove();
+          messageDiv.remove();
+        }
+      };
+      
+      confirmDiv.appendChild(confirmBtn);
+
       chatContainer.appendChild(messageDiv);
+      chatContainer.appendChild(confirmDiv);
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
@@ -749,7 +796,7 @@
           files.map(file => fileToResizedDataUrl(file, 0.7))
         );
 
-        // 이미지 프리뷰 컨테이너 생성
+        // 이미지 프리뷰 표시
         const chatContainer = document.getElementById('chatContainer');
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message sent';
@@ -770,14 +817,42 @@
         bubble.appendChild(previewContainer);
         messageDiv.appendChild(bubble);
         chatContainer.appendChild(messageDiv);
+
+        // 확인 버튼 추가
+        const confirmDiv = document.createElement('div');
+        confirmDiv.className = 'message received';
+        
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'options-container';
+        
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'option-button';
+        confirmBtn.textContent = '✅ 이 사진으로 할게요';
+        confirmBtn.onclick = () => {
+          userData['photo1'] = resizedImages[0];
+          userData['photo2'] = resizedImages[1];
+          uploadedImages = resizedImages;
+          currentStep++;
+          buttonsContainer.remove();
+          confirmDiv.remove();
+          setTimeout(() => askQuestion(), 300);
+        };
+        
+        const retryBtn = document.createElement('button');
+        retryBtn.className = 'option-button';
+        retryBtn.textContent = '🔄 다시 선택할게요';
+        retryBtn.onclick = () => {
+          messageDiv.remove();
+          confirmDiv.remove();
+          document.getElementById('hiddenFileInput').click();
+        };
+        
+        buttonsContainer.appendChild(confirmBtn);
+        buttonsContainer.appendChild(retryBtn);
+        confirmDiv.appendChild(buttonsContainer);
+        chatContainer.appendChild(confirmDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight;
 
-        userData['photo1'] = resizedImages[0];
-        userData['photo2'] = resizedImages[1];
-        uploadedImages = resizedImages;
-        
-        currentStep++;
-        setTimeout(() => askQuestion(), 300);
       } catch (err) {
         console.error(err);
         addMessage('이미지 처리 중 오류가 발생했습니다. 다시 시도해주세요.', 'received');
