@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>두쫀쿠팅</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -11,8 +11,10 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: #ffffff;
       height: 100vh;
+      height: 100dvh; /* 동적 뷰포트 높이 - 키보드 고려 */
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     /* 공지사항 화면 - 흰 배경 */
@@ -95,7 +97,12 @@
       background: rgba(245, 245, 245, 0.95);
       backdrop-filter: blur(20px);
       padding: 8px 15px;
+      padding-bottom: max(8px, env(safe-area-inset-bottom)); /* 노치 대응 */
       border-top: 1px solid rgba(0, 0, 0, 0.1);
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      z-index: 1000;
     }
 
     .input-container {
@@ -451,6 +458,34 @@
       
       // 로컬스토리지에 자동 저장
       localStorage.setItem('trackingData_' + sessionId, JSON.stringify(trackingData));
+      
+      // 중요 이벤트는 즉시 서버 전송
+      if (['start_button_click', 'answer_submitted', 'image_confirmed', 'checkbox_confirmed', 'option_selected'].includes(eventType)) {
+        sendTrackingDataNow();
+      }
+    }
+
+    // 즉시 전송 함수
+    function sendTrackingDataNow() {
+      try {
+        trackingData.endTime = new Date().toISOString();
+        trackingData.completionRate = (currentStep / questions.length * 100).toFixed(1) + '%';
+        
+        const dataToSend = JSON.stringify(trackingData);
+        const blob = new Blob([dataToSend], { type: 'text/plain;charset=utf-8' });
+        
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(GAS_URL + '?action=tracking', blob);
+        } else {
+          // fallback
+          fetch(GAS_URL + '?action=tracking', {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: dataToSend,
+            keepalive: true
+          }).catch(e => {});
+        }
+      } catch (error) {}
     }
 
     // 스크롤 깊이 추적
@@ -471,36 +506,16 @@
     }
 
     // 페이지 이탈 시 데이터 전송
-    async function sendTrackingData() {
-      trackingData.endTime = new Date().toISOString();
-      trackingData.completionRate = (currentStep / questions.length * 100).toFixed(1) + '%';
-      
-      try {
-        // 동기 방식으로 전송 (페이지 닫힐 때도 확실히 전송)
-        if (navigator.sendBeacon) {
-          // sendBeacon 사용 (가장 확실한 방법)
-          const blob = new Blob([JSON.stringify(trackingData)], { type: 'text/plain;charset=utf-8' });
-          navigator.sendBeacon(GAS_URL + '?action=tracking', blob);
-        } else {
-          // fallback
-          await fetch(GAS_URL + '?action=tracking', {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify(trackingData),
-            keepalive: true
-          });
-        }
-      } catch (error) {
-        console.error("트래킹 데이터 전송 실패:", error);
-      }
+    function sendTrackingData() {
+      sendTrackingDataNow();
     }
 
-    // 주기적으로 트래킹 데이터 자동 저장 (5초마다)
+    // 2초마다 자동 저장
     setInterval(() => {
       if (trackingData.events.length > 0) {
-        sendTrackingData();
+        sendTrackingDataNow();
       }
-    }, 5000);
+    }, 2000);
 
     // 이벤트 리스너 등록
     window.addEventListener('scroll', trackScrollDepth, { passive: true });
@@ -632,7 +647,11 @@
 
       messageDiv.appendChild(bubble);
       chatContainer.appendChild(messageDiv);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      
+      // 즉시 스크롤
+      requestAnimationFrame(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      });
     }
 
     function addOptions(options) {
