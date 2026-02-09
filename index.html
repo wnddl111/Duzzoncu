@@ -46,6 +46,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 15px;
+      padding-bottom: 80px; /* 키보드 영역 확보 */
       background: #ffffff;
       display: flex;
       flex-direction: column;
@@ -475,16 +476,31 @@
       trackingData.completionRate = (currentStep / questions.length * 100).toFixed(1) + '%';
       
       try {
-        await fetch(GAS_URL + '?action=tracking', {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(trackingData),
-          keepalive: true // 페이지 닫힐 때도 전송 보장
-        });
+        // 동기 방식으로 전송 (페이지 닫힐 때도 확실히 전송)
+        if (navigator.sendBeacon) {
+          // sendBeacon 사용 (가장 확실한 방법)
+          const blob = new Blob([JSON.stringify(trackingData)], { type: 'text/plain;charset=utf-8' });
+          navigator.sendBeacon(GAS_URL + '?action=tracking', blob);
+        } else {
+          // fallback
+          await fetch(GAS_URL + '?action=tracking', {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(trackingData),
+            keepalive: true
+          });
+        }
       } catch (error) {
         console.error("트래킹 데이터 전송 실패:", error);
       }
     }
+
+    // 주기적으로 트래킹 데이터 자동 저장 (5초마다)
+    setInterval(() => {
+      if (trackingData.events.length > 0) {
+        sendTrackingData();
+      }
+    }, 5000);
 
     // 이벤트 리스너 등록
     window.addEventListener('scroll', trackScrollDepth, { passive: true });
@@ -746,6 +762,12 @@
         } else if (question.type === 'text') {
           enableInput();
         }
+        
+        // 모바일에서 키보드가 올라와도 질문이 보이도록 스크롤
+        setTimeout(() => {
+          const chatContainer = document.getElementById('chatContainer');
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }, 100);
       }, 500);
     }
 
@@ -757,6 +779,12 @@
       input.focus();
       
       trackEvent('input_enabled');
+      
+      // 모바일에서 키보드 올라올 때 질문이 보이도록
+      setTimeout(() => {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 300);
     }
 
     function disableInput() {
@@ -795,6 +823,11 @@
     // 입력 필드에 포커스 트래킹
     document.getElementById('messageInput').addEventListener('focus', () => {
       trackEvent('input_focus');
+      // 키보드 올라올 때 스크롤
+      setTimeout(() => {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 300);
     });
 
     function fileToResizedDataUrl(file, quality = 0.7) {
