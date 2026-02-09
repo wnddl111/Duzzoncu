@@ -15,39 +15,6 @@
       flex-direction: column;
     }
 
-    /* 첫 화면 - 카페 배경 이미지만 */
-    .intro-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-image: url('cafe_bj.jpeg');
-      background-size: cover;
-      background-position: center;
-      z-index: 10;
-    }
-
-    .intro-screen::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 0;
-    }
-
-    .intro-screen > * {
-      position: relative;
-      z-index: 1;
-    }
-
     /* 공지사항 화면 - 흰 배경 */
     .welcome-screen {
       display: flex;
@@ -256,31 +223,6 @@
 
     .start-button:hover { opacity: 0.9; }
 
-    .intro-button {
-      background: rgba(255, 255, 255, 0.95);
-      color: #0b84ff;
-      border: 2px solid #0b84ff;
-      padding: 16px 48px;
-      border-radius: 30px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      animation: pulse 2s infinite;
-    }
-
-    .intro-button:hover {
-      background: #0b84ff;
-      color: white;
-      transform: scale(1.05);
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
     .welcome-screen h2 {
       font-size: 18px;
       margin-bottom: 16px;
@@ -370,13 +312,8 @@
   </div>
 
   <div class="chat-container" id="chatContainer">
-    <!-- 인트로 화면 (클릭 시 표시) -->
-    <div class="intro-screen" id="introScreen" style="display:flex;">
-      <button class="intro-button" onclick="showWelcome()">참여하기</button>
-    </div>
-
     <!-- 공지사항 화면 -->
-    <div class="welcome-screen" id="welcomeScreen" style="display:none;">
+    <div class="welcome-screen" id="welcomeScreen">
       <div class="notice-content">
         <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 소개팅]</strong>
         딱딱하고 각 잡힌 소개팅 말고<br>
@@ -456,12 +393,7 @@
     let userData = {};
     let uploadedImages = [];
 
-    // 인트로에서 공지사항으로 넘어가는 함수
-    function showWelcome() {
-      document.getElementById('introScreen').style.display = 'none';
-      document.getElementById('welcomeScreen').style.display = 'flex';
-    }
-
+    // questions 배열을 먼저 선언 (트래킹 함수에서 사용하기 때문)
     const questions = [
       { id: 'greeting1', text: '안녕하세요! 두쫀쿠팅이에요 ㅎㅎ', type: 'greeting' },
       { id: 'greeting2', text: '원활한 진행을 위해 몇 가지 개인 정보를 수집하고 있어요', type: 'greeting' },
@@ -483,24 +415,113 @@
       { id: 'event_date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (일) 15:30~17:30','3/1 (일) 15:30~17:30','3/8 (일) 15:30~17:30'] }
     ];
 
+    // 🔍 트래킹 데이터
+    let sessionId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    let trackingData = {
+      sessionId: sessionId,
+      startTime: new Date().toISOString(),
+      events: [],
+      maxScrollDepth: 0,
+      lastActiveStep: 0,
+      userAgent: navigator.userAgent,
+      screenSize: `${window.screen.width}x${window.screen.height}`,
+      viewport: `${window.innerWidth}x${window.innerHeight}`
+    };
+
+    // 트래킹 이벤트 기록
+    function trackEvent(eventType, data = {}) {
+      const event = {
+        timestamp: new Date().toISOString(),
+        type: eventType,
+        step: currentStep,
+        stepName: questions[currentStep]?.id || 'unknown',
+        ...data
+      };
+      trackingData.events.push(event);
+      trackingData.lastActiveStep = Math.max(trackingData.lastActiveStep, currentStep);
+      
+      // 로컬스토리지에 자동 저장
+      localStorage.setItem('trackingData_' + sessionId, JSON.stringify(trackingData));
+    }
+
+    // 스크롤 깊이 추적
+    function trackScrollDepth() {
+      const welcomeScreen = document.getElementById('welcomeScreen');
+      const chatContainer = document.getElementById('chatContainer');
+      const container = welcomeScreen.style.display !== 'none' ? welcomeScreen : chatContainer;
+      
+      if (container) {
+        const scrollPercentage = Math.round(
+          (container.scrollTop / (container.scrollHeight - container.clientHeight)) * 100
+        );
+        if (scrollPercentage > trackingData.maxScrollDepth) {
+          trackingData.maxScrollDepth = scrollPercentage;
+          trackEvent('scroll', { depth: scrollPercentage });
+        }
+      }
+    }
+
+    // 페이지 이탈 시 데이터 전송
+    async function sendTrackingData() {
+      trackingData.endTime = new Date().toISOString();
+      trackingData.completionRate = (currentStep / questions.length * 100).toFixed(1) + '%';
+      
+      try {
+        await fetch(GAS_URL + '?action=tracking', {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(trackingData),
+          keepalive: true // 페이지 닫힐 때도 전송 보장
+        });
+      } catch (error) {
+        console.error("트래킹 데이터 전송 실패:", error);
+      }
+    }
+
+    // 이벤트 리스너 등록
+    window.addEventListener('scroll', trackScrollDepth, { passive: true });
+    document.getElementById('chatContainer').addEventListener('scroll', trackScrollDepth, { passive: true });
+    
+    // 페이지 이탈 감지
+    window.addEventListener('beforeunload', sendTrackingData);
+    window.addEventListener('pagehide', sendTrackingData);
+    
+    // visibility change 감지 (모바일에서 앱 전환 등)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        trackEvent('page_hidden');
+        sendTrackingData();
+      } else {
+        trackEvent('page_visible');
+      }
+    });
+
+    // 초기 로드 트래킹
+    trackEvent('page_load');
+
     function resetToWelcome() {
+      // 트래킹 데이터 초기화
+      sessionId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      trackingData = {
+        sessionId: sessionId,
+        startTime: new Date().toISOString(),
+        events: [],
+        maxScrollDepth: 0,
+        lastActiveStep: 0,
+        userAgent: navigator.userAgent,
+        screenSize: `${window.screen.width}x${window.screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`
+      };
+      
       currentStep = 0;
       userData = {};
       uploadedImages = [];
       document.getElementById('chatContainer').innerHTML = '';
       
-      // 인트로 화면 추가
-      const introDiv = document.createElement('div');
-      introDiv.className = 'intro-screen';
-      introDiv.id = 'introScreen';
-      introDiv.style.display = 'flex';
-      introDiv.innerHTML = '<button class="intro-button" onclick="showWelcome()">참여하기</button>';
-      
       // 공지사항 화면 추가
       const welcomeDiv = document.createElement('div');
       welcomeDiv.className = 'welcome-screen';
       welcomeDiv.id = 'welcomeScreen';
-      welcomeDiv.style.display = 'none';
       welcomeDiv.innerHTML = `
         <div class="notice-content">
           <strong>[두쫀쿠팅 : 두쫀쿠 만들면서 소개팅]</strong>
@@ -558,12 +579,12 @@
         <button class="start-button" onclick="startChat()">신청서 작성하기</button>
       `;
       
-      document.getElementById('chatContainer').appendChild(introDiv);
       document.getElementById('chatContainer').appendChild(welcomeDiv);
       document.getElementById('inputArea').style.display = 'none';
     }
 
     function startChat() {
+      trackEvent('start_button_click');
       document.getElementById('welcomeScreen').style.display = 'none';
       document.getElementById('inputArea').style.display = 'block';
       askQuestion();
@@ -602,7 +623,10 @@
         const button = document.createElement('button');
         button.className = 'option-button';
         button.textContent = option;
-        button.onclick = () => handleAnswer(option);
+        button.onclick = () => {
+          trackEvent('option_selected', { option: option });
+          handleAnswer(option);
+        };
         optionsContainer.appendChild(button);
       });
 
@@ -620,6 +644,7 @@
       uploadBtn.className = 'image-upload-btn';
       uploadBtn.innerHTML = '📷 사진 2장 선택하기';
       uploadBtn.onclick = () => {
+        trackEvent('image_upload_button_click');
         document.getElementById('hiddenFileInput').click();
       };
 
@@ -661,6 +686,7 @@
       confirmBtn.disabled = true;
       
       checkbox.onchange = () => {
+        trackEvent('checkbox_toggled', { checked: checkbox.checked, questionId: questionId });
         if (checkbox.checked) {
           confirmBtn.style.opacity = '1';
           confirmBtn.style.cursor = 'pointer';
@@ -674,6 +700,7 @@
       
       confirmBtn.onclick = () => {
         if (checkbox.checked) {
+          trackEvent('checkbox_confirmed', { questionId: questionId });
           handleAnswer('동의함', true);
           confirmDiv.remove();
           messageDiv.remove();
@@ -694,6 +721,7 @@
       }
 
       const question = questions[currentStep];
+      trackEvent('question_shown', { questionId: question.id, questionType: question.type });
 
       setTimeout(() => {
         addMessage(question.text, 'received');
@@ -719,6 +747,8 @@
       input.disabled = false;
       button.disabled = false;
       input.focus();
+      
+      trackEvent('input_enabled');
     }
 
     function disableInput() {
@@ -731,6 +761,11 @@
 
       const question = questions[currentStep];
       userData[question.id] = answer;
+      
+      trackEvent('answer_submitted', { 
+        questionId: question.id, 
+        answerLength: typeof answer === 'string' ? answer.length : 0 
+      });
 
       currentStep++;
       disableInput();
@@ -747,6 +782,11 @@
 
     document.getElementById('messageInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') document.getElementById('sendButton').click();
+    });
+
+    // 입력 필드에 포커스 트래킹
+    document.getElementById('messageInput').addEventListener('focus', () => {
+      trackEvent('input_focus');
     });
 
     function fileToResizedDataUrl(file, quality = 0.7) {
@@ -790,15 +830,20 @@
       if (files.length === 0) return;
 
       if (files.length !== 2) {
+        trackEvent('image_upload_error', { reason: 'wrong_count', count: files.length });
         addMessage('사진을 정확히 2장 선택해주세요.', 'received');
         e.target.value = '';
         return;
       }
 
+      trackEvent('image_upload_started', { count: files.length });
+
       try {
         const resizedImages = await Promise.all(
           files.map(file => fileToResizedDataUrl(file, 0.7))
         );
+
+        trackEvent('image_upload_success');
 
         // 이미지 프리뷰 표시
         const chatContainer = document.getElementById('chatContainer');
@@ -833,6 +878,7 @@
         confirmBtn.className = 'option-button';
         confirmBtn.textContent = '✅ 이 사진으로 할게요';
         confirmBtn.onclick = () => {
+          trackEvent('image_confirmed');
           userData['photo1'] = resizedImages[0];
           userData['photo2'] = resizedImages[1];
           uploadedImages = resizedImages;
@@ -846,6 +892,7 @@
         retryBtn.className = 'option-button';
         retryBtn.textContent = '🔄 다시 선택할게요';
         retryBtn.onclick = () => {
+          trackEvent('image_retry');
           messageDiv.remove();
           confirmDiv.remove();
           document.getElementById('hiddenFileInput').click();
@@ -859,6 +906,7 @@
 
       } catch (err) {
         console.error(err);
+        trackEvent('image_upload_error', { reason: 'processing_failed' });
         addMessage('이미지 처리 중 오류가 발생했습니다. 다시 시도해주세요.', 'received');
       } finally {
         e.target.value = '';
@@ -867,12 +915,14 @@
 
     async function finishChat() {
       addMessage('감사합니다! 제출이 완료되었습니다 🎉', 'received');
+      trackEvent('form_completed');
 
       const submission = {
         id: Date.now(),
         timestamp: new Date().toISOString(),
         date: new Date().toLocaleDateString('ko-KR'),
         time: new Date().toLocaleTimeString('ko-KR'),
+        sessionId: sessionId,
         ...userData
       };
 
@@ -892,10 +942,16 @@
           throw new Error(out.error || `HTTP ${res.status}`);
         }
 
+        trackEvent('submission_success');
+        
+        // 최종 트래킹 데이터 전송
+        await sendTrackingData();
+        
         setTimeout(() => resetToWelcome(), 2000);
 
       } catch (error) {
         console.error("GAS 저장 오류:", error);
+        trackEvent('submission_error', { error: error.message });
         addMessage('저장 중 오류가 발생했습니다: ' + error.message, 'received');
       }
     }
