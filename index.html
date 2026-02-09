@@ -23,6 +23,7 @@
       justify-content: flex-start;
       height: 100%;
       padding: 20px;
+      padding-bottom: 100px; /* 하단 버튼 공간 확보 */
       overflow-y: auto;
       background: #ffffff;
       position: relative;
@@ -216,12 +217,19 @@
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      margin: 20px auto;
-      display: block;
       box-shadow: 0 4px 12px rgba(11, 132, 255, 0.4);
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      transition: all 0.3s ease;
     }
 
-    .start-button:hover { opacity: 0.9; }
+    .start-button:hover { 
+      opacity: 0.9;
+      transform: translateX(-50%) scale(1.05);
+    }
 
     .welcome-screen h2 {
       font-size: 18px;
@@ -282,9 +290,9 @@
     }
 
     @media (max-width: 768px) {
-      .welcome-screen { padding: 15px; }
+      .welcome-screen { padding: 15px; padding-bottom: 100px; }
       .welcome-screen .notice-content { font-size: 12px; padding: 15px; max-width: 100%; }
-      .start-button { padding: 12px 28px; font-size: 14px; }
+      .start-button { padding: 12px 28px; font-size: 14px; bottom: 15px; }
       textarea { max-width: 100% !important; width: 100% !important; }
       .image-preview {
         width: 120px;
@@ -296,7 +304,7 @@
       .welcome-screen .notice-content { font-size: 11px; padding: 12px; }
       .header h1 { font-size: 14px; }
       .header p { font-size: 10px; }
-      .start-button { padding: 10px 24px; font-size: 13px; }
+      .start-button { padding: 10px 24px; font-size: 13px; bottom: 12px; }
       .image-preview {
         width: 100px;
         height: 100px;
@@ -387,7 +395,7 @@
 
   <script>
     // ✅ 너의 Web App URL
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbx3gEZUyKCcWquMMCPF_FOASdzRwHlwkOg4n0Pa-bMwngzGqOJgkaovL44Jc8hgEN71Mw/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbz_qaTlOQmeAkLZ8oIxMqPjVNqsEv6FinDfnJow9kGrePwFhv4oyyzVNh3UW9-g3f_d9A/exec";
 
     let currentStep = 0;
     let userData = {};
