@@ -411,22 +411,22 @@
     const questions = [
       { id: 'greeting1', text: '안녕하세요! 두쫀쿠팅이에요 ㅎㅎ', type: 'greeting' },
       { id: 'greeting2', text: '원활한 진행을 위해 몇 가지 개인 정보를 수집하고 있어요', type: 'greeting' },
-      { id: 'name', text: '먼저 이름을 알려주세요 😊', type: 'text' },
-      { id: 'nickname', text: '소개팅에 사용할 별명을 적어주세요 ⭐', type: 'text' },
-      { id: 'gender', text: '성별을 선택해주세요', type: 'options', options: ['남성', '여성'] },
-      { id: 'age', text: '나이가 어떻게 되시나요?\n(예: 2000년생)', type: 'text' },
-      { id: 'height', text: '키가 어떻게 되시나요?', type: 'text' },
-      { id: 'phone', text: '연락처를 알려주세요\n(예: 010-1234-5678)', type: 'text' },
-      { id: 'job', text: '직업이 무엇인가요?', type: 'text' },
-      { id: 'mbti', text: 'MBTI가 무엇인가요?', type: 'options', options: ['ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ','모름'] },
-      { id: 'ideal_type', text: '이상형을 간단히 설명해주세요! 💕', type: 'text' },
-      { id: 'self_intro', text: '본인을 나타내는 한마디! 🤩', type: 'text' },
-      { id: 'photos', text: '모두가 즐거운 소셜링을 만들기 위해 사진 두 장을 받고 있습니다.\n\n외모 및 신원 확인을 위한 과정이니 양해 부탁드려요!\n남녀 똑같이 확인하고 있답니다 ㅎㅎ\n\n사진 두 장을 선택해주세요 📸', type: 'images' },
-      { id: 'beverage', text: '간단한 음료를 제공하고 있습니다.\n커피와 아이스티 중 어떤 걸 선호하시나요? ☕', type: 'options', options: ['커피','아이스티'] },
-      { id: 'allergy', text: '견과류 알러지가 있으신가요?', type: 'options', options: ['있음','없음'] },
+      { id: 'name', text: '먼저 이름을 알려주세요 😊 (1/13)', type: 'text' },
+      { id: 'nickname', text: '소개팅에 사용할 별명을 적어주세요 ⭐(2/13)', type: 'text' },
+      { id: 'gender', text: '성별을 선택해주세요(3/13)', type: 'options', options: ['남성', '여성'] },
+      { id: 'age', text: '나이가 어떻게 되시나요?(4/13)\n(예: 2000년생)', type: 'text' },
+      { id: 'height', text: '키가 어떻게 되시나요?(5/13)', type: 'text' },
+      { id: 'phone', text: '연락처를 알려주세요(6/13)\n(예: 010-1234-5678)', type: 'text' },
+      { id: 'job', text: '직업이 무엇인가요?(7/13)', type: 'text' },
+      { id: 'mbti', text: 'MBTI가 무엇인가요?(8/13)', type: 'options', options: ['ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ','모름'] },
+      { id: 'ideal_type', text: '이상형을 간단히 설명해주세요(9/13)! 💕', type: 'text' },
+      { id: 'self_intro', text: '본인을 나타내는 한마디! 스킵하셔도 괜찮습니다🤩(10/13)', type: 'text' },
+      { id: 'photos', text: '모두가 즐거운 소셜링을 만들기 위해 사진 두 장을 받고 있습니다.(11/13)\n\n외모 및 신원 확인을 위한 과정이니 양해 부탁드려요!\n남녀 똑같이 확인하고 있답니다 ㅎㅎ\n\n사진 두 장을 선택해주세요 📸', type: 'images' },
+      { id: 'beverage', text: '간단한 음료를 제공하고 있습니다.\n커피와 아이스티 중 어떤 걸 선호하시나요? ☕(12/13)', type: 'options', options: ['커피','아이스티'] },
+      { id: 'allergy', text: '견과류 알러지가 있으신가요?(13/13)', type: 'options', options: ['있음','없음'] },
       { id: 'video', text: '[촬영 동의]\n\n후기 콘텐츠 제작을 위해 진행에 방해되지 않는 선에서 촬영이 있을 예정입니다.\n\n얼굴은 전체 모자이크 처리될 예정이며 이외의 목적에는 사용되지 않습니다.', type: 'checkbox' },
       { id: 'privacy', text: '[개인정보 수집 및 이용 동의]\n\n서비스 제공(목적)을 위해 상기 정보를 수집하며, 수집된 정보는 행사 운영 목적으로만 사용되며 행사 종료 후 자동 파기됩니다.', type: 'checkbox' },
-      { id: 'event_date', text: '참석 가능한 날짜를 선택해주세요!', type: 'options', options: ['2/22 (일) 15:30~17:30','3/1 (일) 15:30~17:30','3/8 (일) 15:30~17:30'] }
+      { id: 'event_date', text: '마지막으로 참석 가능한 날짜를 선택해주세요! 소중한 시간내주셔서 감사합니다', type: 'options', options: ['2/22 (일) 15:30~17:30','3/1 (일) 15:30~17:30','3/8 (일) 15:30~17:30'] }
     ];
 
     // 🔍 트래킹 데이터
